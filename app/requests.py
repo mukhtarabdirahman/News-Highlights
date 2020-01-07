@@ -1,24 +1,23 @@
-from app import app
-import urllib.request
-import json
-from .models import news, articles
+import urllib.request,json
+from .models import Articles,News
 
-News = news.News
-Articles = articles.Articles
 # Getting api key
-apikey = app.config['NEWS_API_KEY']
+api_key = None
+# Getting the movie base url
+base_url = None
+articles_base_url = None
 
-# Getting the news base url
-base_url = app.config['NEWS_API_BASE_URL']
-
-# Getting the articles base url
-article_base_url = app.config['ARTICLE_API_BASE_URL']
+def configure_request(app):
+    global api_key,base_url
+    api_key = app.config['NEWS_API_KEY']
+    base_url = app.config['NEWS_API_BASE_URL']
+    articles_base_url = app.config['ARTICLE_API_BASE_URL']
 
 def get_news():
     '''
     Function that gets the json response to our url request
     '''
-    get_news_url = base_url.format(apikey)
+    get_news_url = base_url.format(api_key)
 
     with urllib.request.urlopen(get_news_url) as url:
         get_news_data = url.read()
@@ -60,7 +59,7 @@ def process_results(news_list):
 
 
 def get_article(id):
-    get_news_details_url = article_base_url.format(id, apikey)
+    get_news_details_url = articles_base_url.format(id, api_key)
 
     with urllib.request.urlopen(get_news_details_url) as url:
         news_details_data = url.read()
